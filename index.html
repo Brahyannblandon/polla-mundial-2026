@@ -215,7 +215,7 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = "<span>⏳</span> TRAMITANDO PASE... ESPERA";
+            btn.innerHTML = "<span>⏳</span> REVISANDO EL VAR...";
             btn.className = "bg-slate-600 border-b-4 border-slate-800 text-slate-300 font-bebas text-3xl py-4 px-12 rounded-2xl cursor-not-allowed inline-flex items-center gap-3";
 
             const payload = {
@@ -229,19 +229,35 @@
                 const formBody = new URLSearchParams();
                 formBody.append("datos", JSON.stringify(payload));
 
-                await fetch(WEB_APP_URL, {
+                // Quitamos el 'no-cors' para poder leer la respuesta de Google
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody
                 });
 
-                alert(`🎉 ¡GOOOOOL de ${nombre}! Tus pronósticos se han guardado con éxito.`);
-                location.reload();
+                const resultado = await response.json();
+
+                if (resultado.status === "duplicado") {
+                    alert(`⛔ JUGADA INVALIDADA: La cédula ${cedula} ya registró sus pronósticos. ¡Solo se permite un intento por persona!`);
+                    
+                    // Desbloqueamos el botón por si quiere meter la cédula correcta
+                    btn.disabled = false;
+                    btn.innerHTML = "<span>⚽</span> ENVIAR PRONÓSTICOS AL VAR";
+                    btn.className = "bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-b-4 border-green-900 text-white font-bebas text-3xl py-4 px-12 rounded-2xl shadow-2xl transform hover:-translate-y-1 active:translate-y-1 active:border-b-0 transition-all duration-150 cursor-pointer inline-flex items-center gap-3";
+                    return; // Detenemos el proceso
+                }
+
+                if (resultado.status === "ok") {
+                    alert(`🎉 ¡GOOOOOL de ${nombre}! Tus pronósticos se han guardado con éxito.`);
+                    location.reload(); // Recarga la página
+                } else {
+                    throw new Error("Error interno del script");
+                }
 
             } catch (error) {
                 console.error(error);
-                alert("❌ VAR INTERVIENE: Hubo un fallo en la conexión. Revisa que hayas pegado bien la URL de Google Script en el código.");
+                alert("❌ FALLA TÉCNICA: Hubo un problema de conexión. Intenta de nuevo.");
                 
                 btn.disabled = false;
                 btn.innerHTML = "<span>⚽</span> ENVIAR PRONÓSTICOS AL VAR";

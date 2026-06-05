@@ -198,70 +198,62 @@
         }
 
         async function guardarPolla() {
-            const cedula = document.getElementById('user-cedula').value.trim();
             const nombre = document.getElementById('user-name').value.trim();
             const ciudad = document.getElementById('user-city').value.trim();
             const btn = document.getElementById('btn-guardar');
 
-            if (!cedula || !nombre || !ciudad) {
-                alert("🔴 TARJETA ROJA: Por favor ingresa tu Cédula, Nombre y Sede.");
+            // 1. Validar Datos de Usuario
+            if (!nombre || !ciudad) {
+                alert("⚠️ Por favor ingresa tu Nombre y tu Ciudad.");
                 return;
             }
 
+            // 2. Validar que la polla esté completa
             let incompletos = Object.keys(selecciones).filter(g => selecciones[g].length !== 2);
             if (incompletos.length > 0) {
-                alert(`🟨 TARJETA AMARILLA: Te falta completar los siguientes grupos:\n\n${incompletos.join(', ')}`);
+                alert(`⚠️ Te falta completar los siguientes grupos: ${incompletos.join(', ')}`);
                 return;
             }
 
+            // Cambiar estado del botón
             btn.disabled = true;
-            btn.innerHTML = "<span>⏳</span> REVISANDO EL VAR...";
-            btn.className = "bg-slate-600 border-b-4 border-slate-800 text-slate-300 font-bebas text-3xl py-4 px-12 rounded-2xl cursor-not-allowed inline-flex items-center gap-3";
+            btn.innerText = "⏳ Enviando resultados...";
+            btn.className = "bg-gray-600 text-gray-400 font-bold py-4 px-10 rounded-full cursor-not-allowed text-lg";
 
+            // 3. Empaquetar y enviar datos a Google Drive
             const payload = {
-                cedula: cedula,
                 nombre: nombre,
                 ciudad: ciudad,
                 predicciones: selecciones
             };
 
             try {
+                // Transformamos los datos a formato de formulario compatible con no-cors
                 const formBody = new URLSearchParams();
                 formBody.append("datos", JSON.stringify(payload));
 
-                // Quitamos el 'no-cors' para poder leer la respuesta de Google
-                const response = await fetch(WEB_APP_URL, {
+                // Enviar datos por método POST
+                await fetch(WEB_APP_URL, {
                     method: 'POST',
+                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody
                 });
 
-                const resultado = await response.json();
-
-                if (resultado.status === "duplicado") {
-                    alert(`⛔ JUGADA INVALIDADA: La cédula ${cedula} ya registró sus pronósticos. ¡Solo se permite un intento por persona!`);
-                    
-                    // Desbloqueamos el botón por si quiere meter la cédula correcta
-                    btn.disabled = false;
-                    btn.innerHTML = "<span>⚽</span> ENVIAR PRONÓSTICOS AL VAR";
-                    btn.className = "bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-b-4 border-green-900 text-white font-bebas text-3xl py-4 px-12 rounded-2xl shadow-2xl transform hover:-translate-y-1 active:translate-y-1 active:border-b-0 transition-all duration-150 cursor-pointer inline-flex items-center gap-3";
-                    return; // Detenemos el proceso
-                }
-
-                if (resultado.status === "ok") {
-                    alert(`🎉 ¡GOOOOOL de ${nombre}! Tus pronósticos se han guardado con éxito.`);
-                    location.reload(); // Recarga la página
-                } else {
-                    throw new Error("Error interno del script");
-                }
+                // Como usamos no-cors no podemos leer la respuesta exacta, pero si no se va al catch, asumimos éxito
+                alert(`🎉 ¡Listo ${nombre}! Tus predicciones se guardaron directamente en el Excel.`);
+                
+                // Limpiar campos o refrescar
+                location.reload();
 
             } catch (error) {
                 console.error(error);
-                alert("❌ FALLA TÉCNICA: Hubo un problema de conexión. Intenta de nuevo.");
+                alert("❌ Ocurrió un error al enviar los datos. Revisa la consola o la configuración del script.");
                 
+                // Reestablecer botón en caso de error
                 btn.disabled = false;
-                btn.innerHTML = "<span>⚽</span> ENVIAR PRONÓSTICOS AL VAR";
-                btn.className = "bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-b-4 border-green-900 text-white font-bebas text-3xl py-4 px-12 rounded-2xl shadow-2xl transform hover:-translate-y-1 active:translate-y-1 active:border-b-0 transition-all duration-150 cursor-pointer inline-flex items-center gap-3";
+                btn.innerText = "💾 Guardar y Enviar al Drive";
+                btn.className = "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-200 cursor-pointer text-lg";
             }
         }
     </script>

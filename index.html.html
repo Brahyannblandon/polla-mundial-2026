@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Polla Mundialista 2026 - Fase de Grupos</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #114220;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(255, 255, 255, 0.03) 40px,
+                    rgba(255, 255, 255, 0.03) 80px
+                );
+            background-attachment: fixed;
+            color: #f8fafc;
+        }
+
+        h1, h2, .font-bebas { font-family: 'Bebas Neue', cursive; letter-spacing: 1.5px; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .selected-1 {
+            background: linear-gradient(135deg, #ca8a04, #eab308) !important;
+            color: #fff !important;
+            border: 2px solid #fef08a !important;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
+        }
+
+        .selected-2 {
+            background: linear-gradient(135deg, #64748b, #94a3b8) !important;
+            color: #fff !important;
+            border: 2px solid #f1f5f9 !important;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(148, 163, 184, 0.4);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+        
+        /* Ocultar flechas en input number */
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <div class="container mx-auto px-4 py-10 max-w-7xl">
+        <header class="text-center mb-12 relative z-10">
+            <div class="text-6xl mb-4 float-animation">🏆</div>
+            <h1 class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-500 uppercase drop-shadow-lg">
+                Polla Mundial 2026<br><span class="text-white text-4xl md:text-5xl">CORNABIS</span>
+            </h1>
+            <p class="text-gray-300 mt-4 text-lg md:text-xl font-semibold bg-black/40 inline-block px-6 py-2 rounded-full border border-gray-600">
+                ⚽ Selecciona el <span class="text-yellow-400">1º</span> y <span class="text-slate-300">2º</span> lugar de cada grupo
+            </p>
+        </header>
+
+        <div class="glass-panel rounded-2xl p-6 mb-12 max-w-4xl mx-auto border-t-4 border-t-yellow-500">
+            <h3 class="text-2xl font-bebas text-yellow-400 mb-4 flex items-center gap-2">
+                <span>📝</span> Ficha del DT (Tus Datos)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Cédula / ID *</label>
+                    <input type="number" id="user-cedula" class="w-full bg-slate-800/80 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/50 transition-all placeholder-gray-500" placeholder="Ej. 1020304050">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Nombre Completo *</label>
+                    <input type="text" id="user-name" class="w-full bg-slate-800/80 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/50 transition-all placeholder-gray-500" placeholder="Ej. Lionel Messi">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Sede (Ciudad) *</label>
+                    <input type="text" id="user-city" class="w-full bg-slate-800/80 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/50 transition-all placeholder-gray-500" placeholder="Ej. Bogotá">
+                </div>
+            </div>
+        </div>
+
+        <div id="grupos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            </div>
+
+        <div class="text-center mt-16 relative z-10">
+            <button id="btn-guardar" onclick="guardarPolla()" class="bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-b-4 border-green-900 text-white font-bebas text-3xl py-4 px-12 rounded-2xl shadow-2xl shadow-green-500/30 transform hover:-translate-y-1 active:translate-y-1 active:border-b-0 transition-all duration-150 cursor-pointer inline-flex items-center gap-3">
+                <span>⚽</span> ENVIAR PRONÓSTICOS AL VAR
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 👇 PEGA AQUÍ LA URL DE TU GOOGLE APPS SCRIPT 👇
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwu85Sns49BrmIn0LzBPuzBkfZoBQVRFNtW9dE4np3MXVcVsH4yj7OpOlbTRoVJcLtw/exec";
+
+        const mundial2026 = {
+            "Grupo A": ["México", "Sudáfrica", "Corea del Sur", "República Checa"],
+            "Grupo B": ["Canadá", "Bosnia y Herzegovina", "Catar", "Suiza"],
+            "Grupo C": ["Brasil", "Marruecos", "Haití", "Escocia"],
+            "Grupo D": ["Estados Unidos", "Paraguay", "Australia", "Turquía"],
+            "Grupo E": ["Alemania", "Curazao", "Costa de Marfil", "Ecuador"],
+            "Grupo F": ["Países Bajos", "Japón", "Suecia", "Túnez"],
+            "Grupo G": ["Bélgica", "Egipto", "Irán", "Nueva Zelanda"],
+            "Grupo H": ["España", "Cabo Verde", "Arabia Saudita", "Uruguay"],
+            "Grupo I": ["Francia", "Senegal", "Irak", "Noruega"],
+            "Grupo J": ["Argentina", "Argelia", "Austria", "Jordania"],
+            "Grupo K": ["Portugal", "RD Congo", "Uzbekistán", "Colombia"],
+            "Grupo L": ["Inglaterra", "Croacia", "Ghana", "Panamá"]
+        };
+
+        let selecciones = {};
+        Object.keys(mundial2026).forEach(g => selecciones[g] = []);
+
+        const container = document.getElementById('grupos-container');
+        Object.keys(mundial2026).forEach(grupo => {
+            const grupoDiv = document.createElement('div');
+            grupoDiv.id = `contenedor-${grupo.replace(' ', '')}`;
+            grupoDiv.className = "glass-panel rounded-xl p-5 flex flex-col justify-between transition-all";
+            container.appendChild(grupoDiv);
+            renderGrupo(grupo);
+        });
+
+        function renderGrupo(grupo) {
+            const div = document.getElementById(`contenedor-${grupo.replace(' ', '')}`);
+            const equipos = mundial2026[grupo];
+            const elegidos = selecciones[grupo];
+            const estaCompleto = elegidos.length === 2;
+
+            let html = `
+                <div>
+                    <div class="flex justify-between items-center mb-4 border-b border-white/20 pb-2">
+                        <h2 class="text-3xl text-yellow-400 font-bebas tracking-wider drop-shadow">${grupo}</h2>
+                        <span class="text-xs font-bold px-3 py-1.5 rounded-full ${estaCompleto ? 'bg-green-500 text-white shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'bg-slate-700 text-slate-300'}">
+                            ${elegidos.length} / 2
+                        </span>
+                    </div>
+                    <div class="space-y-2.5">
+            `;
+
+            equipos.forEach(equipo => {
+                const index = elegidos.indexOf(equipo);
+                let btnClasses = "w-full text-left py-3 px-4 bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg transition-all duration-200 border border-slate-600 flex justify-between items-center cursor-pointer";
+                let badge = "";
+
+                if (index === 0) {
+                    btnClasses = "w-full text-left py-3 px-4 selected-1 font-bold rounded-lg transition-all duration-200 flex justify-between items-center cursor-pointer";
+                    badge = `<span class="bg-white text-yellow-600 text-[10px] px-2 py-1 rounded-full font-black uppercase tracking-wider flex items-center gap-1"><span class="text-sm">🥇</span> 1ro</span>`;
+                } else if (index === 1) {
+                    btnClasses = "w-full text-left py-3 px-4 selected-2 font-bold rounded-lg transition-all duration-200 flex justify-between items-center cursor-pointer";
+                    badge = `<span class="bg-white text-slate-600 text-[10px] px-2 py-1 rounded-full font-black uppercase tracking-wider flex items-center gap-1"><span class="text-sm">🥈</span> 2do</span>`;
+                }
+
+                html += `
+                    <button onclick="toggleEquipo('${grupo}', '${equipo}')" class="${btnClasses}">
+                        <span class="text-sm md:text-base">${equipo}</span>
+                        ${badge}
+                    </button>
+                `;
+            });
+
+            html += `</div></div>`;
+            div.innerHTML = html;
+        }
+
+        function toggleEquipo(grupo, equipo) {
+            let elegidos = selecciones[grupo];
+            const index = elegidos.indexOf(equipo);
+
+            if (index !== -1) {
+                elegidos.splice(index, 1);
+            } else {
+                if (elegidos.length >= 2) {
+                    alert(`⚠️ Ya tienes al 1º y 2º lugar de este grupo. Desmarca uno primero.`);
+                    return;
+                }
+                elegidos.push(equipo);
+            }
+            renderGrupo(grupo);
+        }
+
+        async function guardarPolla() {
+            const cedula = document.getElementById('user-cedula').value.trim();
+            const nombre = document.getElementById('user-name').value.trim();
+            const ciudad = document.getElementById('user-city').value.trim();
+            const btn = document.getElementById('btn-guardar');
+
+            if (!cedula || !nombre || !ciudad) {
+                alert("🔴 TARJETA ROJA: Por favor ingresa tu Cédula, Nombre y Sede.");
+                return;
+            }
+
+            let incompletos = Object.keys(selecciones).filter(g => selecciones[g].length !== 2);
+            if (incompletos.length > 0) {
+                alert(`🟨 TARJETA AMARILLA: Te falta completar los siguientes grupos:\n\n${incompletos.join(', ')}`);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "<span>⏳</span> TRAMITANDO PASE... ESPERA";
+            btn.className = "bg-slate-600 border-b-4 border-slate-800 text-slate-300 font-bebas text-3xl py-4 px-12 rounded-2xl cursor-not-allowed inline-flex items-center gap-3";
+
+            const payload = {
+                cedula: cedula,
+                nombre: nombre,
+                ciudad: ciudad,
+                predicciones: selecciones
+            };
+
+            try {
+                const formBody = new URLSearchParams();
+                formBody.append("datos", JSON.stringify(payload));
+
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody
+                });
+
+                alert(`🎉 ¡GOOOOOL de ${nombre}! Tus pronósticos se han guardado con éxito.`);
+                location.reload();
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ VAR INTERVIENE: Hubo un fallo en la conexión. Revisa que hayas pegado bien la URL de Google Script en el código.");
+                
+                btn.disabled = false;
+                btn.innerHTML = "<span>⚽</span> ENVIAR PRONÓSTICOS AL VAR";
+                btn.className = "bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-b-4 border-green-900 text-white font-bebas text-3xl py-4 px-12 rounded-2xl shadow-2xl transform hover:-translate-y-1 active:translate-y-1 active:border-b-0 transition-all duration-150 cursor-pointer inline-flex items-center gap-3";
+            }
+        }
+    </script>
+</body>
+</html>
